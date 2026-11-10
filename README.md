@@ -34,3 +34,12 @@ Support desk. Decision records: whoever signed them.
 ---
 
 Exported 2026-10-04 from the `support` repo, `apps/kb/` → `src/`.
+
+## In this copy
+
+- `src/routes/kb/incidents/4471-split/+page.svx`: a signed page that splits #4471 into the problems its reports describe.
+- `src/lib/kb/problems.ts` and `src/lib/kb/ProblemTable.svelte`: the logic and the table that the page uses. The page types no counts.
+- `rendered/`: the kb built to static HTML. `rendered/kb/incidents/4471-split.html` is the page as the desk sees it, and `rendered/4471-split.png` is a screenshot of it.
+- The tickets are the issues of this repo, one per problem.
+
+To build the kb again: `npm install`, then `npm run build`. The build setup (`package.json`, `svelte.config.js`, `vite.config.js`, `src/app.html`, `src/routes/+layout.js`) is not part of the export.

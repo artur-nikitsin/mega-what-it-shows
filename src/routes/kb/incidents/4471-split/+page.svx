@@ -1,0 +1,84 @@
+---
+layout: runbook
+title: '#4471 split: the problems it holds'
+owner: artur-nikitsin
+status: open
+reviewed: 2026-11-10
+signature: v1.eyJzdWIiOiIxMzU1IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTQzNDAzMTAsImV4cCI6MTc5NDQyNjcxMH0.St9e4hjtugTWX60mEOQlr3mgX5B0q_Dag0RdaU_KV8k
+---
+
+<script>
+  import ProblemTable from '#lib/kb/ProblemTable.svelte';
+  import QueueTimeline from '#lib/kb/QueueTimeline.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+
+  const repo = 'https://github.com/artur-nikitsin/mega-what-it-shows/issues';
+  const tickets = { parser: `${repo}/1`, hint: `${repo}/2`, 'one-day': `${repo}/3` };
+</script>
+
+[#4471](/kb/incidents/4471) is marked known: one issue, one fix queued. Its reports say otherwise.
+They describe more than one problem, and the queued parser fix solves only one of them. Each
+problem below now has its own ticket, so each one gets its own fix and its own count.
+
+<Callout kind="warn">
+Do not close the reports in #4471 when the parser fix ships. The <code>hint</code> and
+<code>one-day</code> reports stay broken after it.
+</Callout>
+
+## What #4471 holds
+
+<ProblemTable ticket={4471} {tickets} />
+
+## The problems
+
+### `parser`: the shared parser reads every date month first
+
+A tenant in a day-first locale writes 7/4 for 7 April. The shared parser reads it as 4 July. The
+day and the month swap, so the booking, the invite and the reminder land on the wrong date. This
+is the bug #4471 names. It reaches the desk through every channel: app, email and form.
+
+### `hint`: the booking-v3 form tells people to type the month first
+
+booking-v3 prints `MM/DD/YYYY` under its date field. People type what the hint tells them, month
+first. The form then reads the date the tenant's way, day first, so the date flips. Only tenants in
+a day-first locale that run booking-v3 get it, and only for dates typed into the form. The parser
+fix does not touch it: here the form's hint and the form's reader disagree with each other.
+
+### `one-day`: the date moves by one day
+
+These reports are not a swap. A Tuesday shows as a Monday. A client in Lisbon gets Tuesday and a
+client in Toronto gets Monday for the same meeting. An invite arrives before the booking was made.
+The desk read these as one-day moves ([desk notes](https://github.com/artur-nikitsin/mega-what-it-shows/blob/main/src/lib/data/desk-notes.json)),
+but the cause table on #4471 files them under `parser` by tenant. They point to a time zone bug: a
+date sent as midnight in one zone and shown in another. Engineering must confirm the cause.
+
+## Why one ticket hid them
+
+- [Decision 0001](/kb/decisions/0001-dedupe-by-subject) merges reports on the subject line. A
+  subject does not say which bug a report is about. The same subject comes from different
+  problems, and different subjects come from the same problem. #4471 holds many subjects, all
+  merged as one. [Try it](/kb/triage/dedupe).
+- Intake's tag is a guess from the reporter's browser: an en-US browser gets `hint`. The cause
+  depends on the tenant's locale and booking form. The table shows how far the tags are from the
+  causes.
+- The cause table on #4471 already showed a second cause and a note about one-day moves. The page
+  text above it still said "one issue".
+
+Decision 0001 is accepted, so this page does not edit it. To change how the desk merges, write a
+new decision record that replaces it.
+
+## Since April
+
+<QueueTimeline ticket={4471} />
+
+## How this page counts
+
+- One id, one report. The export repeats some reports; each id counts once.
+- The cause is the desk's own rule in `causes.ts`: the tenant's locale and booking form, not the
+  intake tag.
+- A report the desk read as a one-day move counts under `one-day`, not under `parser`.
+- Every number on this page is computed when the page renders, from `reports-4471.json` and
+  `desk-notes.json`. When the desk merges more reports, the table follows.
+
+<RenderStamp {signature} />
