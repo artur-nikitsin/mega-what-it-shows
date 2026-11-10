@@ -2,8 +2,8 @@
 layout: runbook
 title: '#4471 split: the problems it holds'
 owner: artur-nikitsin
-status: open
-reviewed: 2026-11-10
+status: closed
+reviewed: 2026-11-11
 signature: v1.eyJzdWIiOiIxMzU1IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTQzNDAzMTAsImV4cCI6MTc5NDQyNjcxMH0.St9e4hjtugTWX60mEOQlr3mgX5B0q_Dag0RdaU_KV8k
 ---
 
@@ -17,14 +17,24 @@ signature: v1.eyJzdWIiOiIxMzU1IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYX
   const tickets = { parser: `${repo}/1`, hint: `${repo}/2`, 'one-day': `${repo}/3` };
 </script>
 
-[#4471](/kb/incidents/4471) is marked known: one issue, one fix queued. Its reports say otherwise.
-They describe more than one problem, and the queued parser fix solves only one of them. Each
-problem below now has its own ticket, so each one gets its own fix and its own count.
+[#4471](/kb/incidents/4471) was marked known: one issue, one fix queued. Its reports said otherwise.
+They describe more than one problem, and the parser fix solves only one of them. Each problem
+below has its own ticket, so each one has its own outcome and its own count.
 
 <Callout kind="warn">
-Do not close the reports in #4471 when the parser fix ships. The <code>hint</code> and
-<code>one-day</code> reports stay broken after it.
+#4471 closed on 5 October. The parser fix and the end of booking-v3 do not touch the
+<code>one-day</code> reports. If a one-day report comes in after 5 October, reopen its ticket.
 </Callout>
+
+## Outcome
+
+Engineering update on #4471, closed 5 October:
+
+| problem | outcome | ticket |
+|---|---|---|
+| `parser` | Fixed: `fix(dates): parse dd/mm for eu locales` | [#1](https://github.com/artur-nikitsin/mega-what-it-shows/issues/1), closed as completed |
+| `hint` | Won't fix: the booking-v3 form is retired | [#2](https://github.com/artur-nikitsin/mega-what-it-shows/issues/2), closed as not planned |
+| `one-day` | Not in the update. The parser fix does not change a one-day move. | [#3](https://github.com/artur-nikitsin/mega-what-it-shows/issues/3), closed as not planned; reopen on a new report |
 
 ## What #4471 holds
 
