@@ -9,7 +9,6 @@
   let { ticket, tickets = {} }: { ticket: number; tickets?: Partial<Record<Problem, string>> } = $props();
 
   const split = $derived(splitTicket(reports as Report[], ticket, tenantOf, notes.oneDayMove));
-  const counted = $derived(split.groups.reduce((n, g) => n + g.reports.length, 0));
   const list = (n: Record<string, number>) =>
     Object.entries(n)
       .sort((a, b) => b[1] - a[1])
@@ -42,8 +41,11 @@
   </tbody>
 </table>
 
-{#if counted !== split.merged.length}
-  <p class="note wrong">{split.merged.length - counted} reports fit no problem above.</p>
+{#if split.countedTwice.length}
+  <p class="note">
+    {split.countedTwice.length} reports read as a one-day move count twice: under <code>one-day</code>, and under
+    the cause the desk files them under by tenant, as the cause table on #{ticket} counts them.
+  </p>
 {/if}
 
 {#each split.groups as g (g.problem)}
@@ -57,7 +59,7 @@
   .sum { font-size: 1.1rem; }
   .small { color: var(--muted); font-size: 0.85em; }
   .note { color: var(--muted); font-size: 0.85em; }
-  .wrong td, p.wrong { background: var(--warn-bg); color: var(--warn); }
+  .wrong td { background: var(--warn-bg); color: var(--warn); }
   details { margin: 0.25rem 0; font-size: 0.85rem; }
   .ids { font: 0.8rem var(--mono); color: var(--muted); word-spacing: 0.3em; }
 </style>

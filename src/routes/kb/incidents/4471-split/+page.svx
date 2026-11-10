@@ -50,7 +50,8 @@ fix does not touch it: here the form's hint and the form's reader disagree with 
 These reports are not a swap. A Tuesday shows as a Monday. A client in Lisbon gets Tuesday and a
 client in Toronto gets Monday for the same meeting. An invite arrives before the booking was made.
 The desk read these as one-day moves ([desk notes](https://github.com/artur-nikitsin/mega-what-it-shows/blob/main/src/lib/data/desk-notes.json)),
-but the cause table on #4471 files them under `parser` by tenant. They point to a time zone bug: a
+and the cause table on #4471 files them under `parser` by tenant. A parser fix does not fix them,
+so they get their own ticket here as well. They point to a time zone bug: a
 date sent as midnight in one zone and shown in another. Engineering must confirm the cause.
 
 ## Why one ticket hid them
@@ -77,7 +78,8 @@ new decision record that replaces it.
 - One id, one report. The export repeats some reports; each id counts once.
 - The cause is the desk's own rule in `causes.ts`: the tenant's locale and booking form, not the
   intake tag.
-- A report the desk read as a one-day move counts under `one-day`, not under `parser`.
+- A report the desk read as a one-day move counts under `one-day`. It also stays counted under the
+  cause the desk files it under, as the cause table on #4471 counts it.
 - Every number on this page is computed when the page renders, from `reports-4471.json` and
   `desk-notes.json`. When the desk merges more reports, the table follows.
 
